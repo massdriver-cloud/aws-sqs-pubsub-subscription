@@ -1,0 +1,13 @@
+# Operator Guide
+
+
+## Impl notes for copywriting
+
+* subscription uses the upstream topics region. supports cross region
+* DLQ w/ three attempts to redrive
+* FIFO-ness is set based on Topic's value
+* content based deduplication is disabled (when fifo) as deduplication would happen at SNS level
+* SSE is enabled. multiregion sns->sqs will create a custom key w/ default AWS access, otherwise it will use the aws default aws key
+* visibility timeout for dlq is set to that of main queue
+* max message size for dlq is set to that of main queue
+* dlq message retention is set to 4 days (the max) to give time for debugging and processing messages

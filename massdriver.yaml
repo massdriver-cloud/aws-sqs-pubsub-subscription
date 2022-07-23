@@ -1,0 +1,79 @@
+schema: draft-07
+name: "aws-sqs-pubsub-subscription"
+description: "skip"
+ref: github.com/massdriver-cloud/aws-sqs-pubsub-subscription
+access: "public"
+type: "bundle"
+
+params:
+  examples:
+    - __name: Default Queue
+      queue:
+        region: us-west-2
+        visibility_timeout_seconds: 30
+        message_retention_seconds: 345600
+        max_message_size: 262144
+  required:
+    - queue
+  properties:
+    queue:
+      type: object
+      required:
+        - region
+        - visibility_timeout_seconds
+        - message_retention_seconds
+        - max_message_size
+      properties:
+        region:
+          $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/aws-region.json
+        visibility_timeout_seconds:
+          type: integer
+          title: Visibility Timeout (seconds)
+          description: The visibility timeout for the queue. The default for this attribute is 30.
+          default: 30
+          minimum: 0
+          maximum: 43200
+        message_retention_seconds:
+          type: integer
+          title: Message Retention (seconds)
+          default: 345600
+          minimum: 60
+          maximum: 1209600
+          description: The number of seconds Amazon SQS retains a message. The default for this attribute is 345600 (4 days).
+        max_message_size:
+          type: integer
+          title: Max Message Size (KiB)
+          default: 262144
+          minimum: 1024
+          maximum: 262144
+          description: The limit of how many bytes a message can contain before Amazon SQS rejects it.
+
+connections:
+  required:
+    - aws_authentication
+    - topic
+  properties:
+    aws_authentication:
+      $ref: massdriver/aws-iam-role
+    topic:
+      $ref: massdriver/aws-sns-topic
+
+artifacts:
+  required:
+    - queue
+    - dlq
+  properties:
+    queue:
+      $ref: massdriver/aws-sqs-queue
+    dlq:
+      $ref: massdriver/aws-sqs-queue
+
+ui:
+  ui:order:
+    - "queue"
+  queue:
+    ui:order:
+      - region
+      - visibility_timeout_seconds
+      - message_retention_seconds
+      - max_message_size
