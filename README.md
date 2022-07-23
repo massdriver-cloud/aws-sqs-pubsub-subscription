@@ -1,6 +1,6 @@
 # aws-sqs-pubsub-subscription
 
-skip
+AWS SQS Pub/Sub Subscription is an encrypted SQS Queue designed for Pub/Sub fan-out messaging with AWS SNS.
 
 ## Development
 
