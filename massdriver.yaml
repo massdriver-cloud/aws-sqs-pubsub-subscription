@@ -13,7 +13,7 @@ params:
   examples:
     - __name: Default Queue
       queue:
-        region: us-west-2
+        region: us-east-1
         visibility_timeout_seconds: 30
         message_retention_seconds: 345600
         max_message_size: 262144

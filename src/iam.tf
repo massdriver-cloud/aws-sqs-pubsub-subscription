@@ -1,5 +1,5 @@
 locals {
-  _subscriber_statement = [{
+  _subscribe_statement = [{
     Action   = ["sqs:ReceiveMessage", "sqs:DeleteMessage"]
     Effect   = "Allow"
     Resource = aws_sqs_queue.main.arn
@@ -17,22 +17,22 @@ locals {
     Resource = module.kms_key[0].key_arn
   }] : []
 
-  subscriber_statement = flatten([local._subscriber_statement, local._kms_decrypt_statement])
-  dlq_statement        = flatten([local._dlq_statement, local._kms_decrypt_statement])
+  subscribe_statement = flatten([local._subscribe_statement, local._kms_decrypt_statement])
+  dlq_statement       = flatten([local._dlq_statement, local._kms_decrypt_statement])
 }
 
-resource "aws_iam_policy" "subscriber" {
-  name        = "${local.name}-subscriber"
-  description = "SQS Pub/Sub subscriber policy: ${local.name}"
+resource "aws_iam_policy" "subscribe" {
+  name        = "${local.name}-subscribe"
+  description = "SQS Pub/Sub subscribe policy: ${local.name}"
 
   policy = jsonencode({
     Version   = "2012-10-17"
-    Statement = local.subscriber_statement
+    Statement = local.subscribe_statement
   })
 }
 
-resource "aws_iam_policy" "dlq_subscriber" {
-  name        = "${local.name}-dlq-subscriber"
+resource "aws_iam_policy" "dlq_subscribe" {
+  name        = "${local.name}-dlq-subscribe"
   description = "SQS Pub/Sub dead-letter queue policy: ${local.name}"
 
   policy = jsonencode({
@@ -40,3 +40,6 @@ resource "aws_iam_policy" "dlq_subscriber" {
     Statement = local.dlq_statement
   })
 }
+
+
+

@@ -8,6 +8,13 @@ resource "massdriver_artifact" "queue" {
         infrastructure = {
           arn = aws_sqs_queue.main.arn
         }
+        security = {
+          iam = {
+            subscribe = {
+              policy_arn = aws_iam_policy.subscribe.arn
+            }
+          }
+        }
       }
       specs = {
         aws = {
@@ -27,6 +34,13 @@ resource "massdriver_artifact" "dlq" {
       data = {
         infrastructure = {
           arn = aws_sqs_queue.dlq.arn
+        }
+        security = {
+          iam = {
+            subscribe = {
+              policy_arn = aws_iam_policy.dlq_subscribe.arn
+            }
+          }
         }
       }
       specs = {
