@@ -82,3 +82,6 @@ ui:
       - visibility_timeout_seconds
       - message_retention_seconds
       - max_message_size
+    region:
+      ui:field: supportedCloudLocationsDropdown
+      cloudService: aws
