@@ -40,6 +40,3 @@ resource "aws_iam_policy" "dlq_subscribe" {
     Statement = local.dlq_statement
   })
 }
-
-
-
