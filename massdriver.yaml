@@ -1,7 +1,7 @@
 schema: draft-07
 name: "aws-sqs-pubsub-subscription"
 description: "AWS SQS Pub/Sub Subscription is an encrypted SQS Queue designed for Pub/Sub fan-out messaging with AWS SNS."
-ref: github.com/massdriver-cloud/aws-sqs-pubsub-subscription
+source_url: github.com/massdriver-cloud/aws-sqs-pubsub-subscription
 access: "public"
 type: "bundle"
 
