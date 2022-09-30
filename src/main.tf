@@ -53,9 +53,12 @@ resource "aws_sqs_queue" "dlq" {
   sqs_managed_sse_enabled     = local.is_multi_region ? null : true
   content_based_deduplication = false
   visibility_timeout_seconds  = var.queue.visibility_timeout_seconds
-  message_retention_seconds   = 1209600
-  max_message_size            = var.queue.max_message_size
   kms_master_key_id           = local.kms_key_id
+  # Set to max time to allow for processing
+  message_retention_seconds = 1209600
+
+  # Set to max size in case message is rejected on primary queue for size
+  max_message_size = 262144
 }
 
 resource "aws_sns_topic_subscription" "main" {

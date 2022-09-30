@@ -12,6 +12,8 @@ steps:
 params:
   examples:
     - __name: Default Queue
+      monitoring:
+        alarms: AUTOMATED
       queue:
         region: us-east-1
         visibility_timeout_seconds: 30
@@ -20,6 +22,24 @@ params:
   required:
     - queue
   properties:
+    monitoring:
+      type: object
+      title: Monitoring
+      properties:
+        alarms:
+          title: Alarms
+          description: Enable and customize SQS metric alarms.
+          # TODO: back this to a type to keep it consistent across bundles
+          type: string
+          default: AUTOMATED
+          oneOf:
+            - const: AUTOMATED
+              title: Automated
+            # - const: CUSTOM
+            #   title: Custom
+            - const: DISABLED
+              title: Disabled
+
     queue:
       type: object
       required:
@@ -76,6 +96,7 @@ artifacts:
 ui:
   ui:order:
     - "queue"
+    - "*"
   queue:
     ui:order:
       - region

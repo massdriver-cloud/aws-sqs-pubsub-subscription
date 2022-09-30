@@ -389,4 +389,12 @@ Please connect with us!
 
 <!-- markdownlint-restore -->
 
+
 <!-- CONNECT:END -->
+
+
+## Links
+
+* [SQS Key Management](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-key-management.html)
+* [SQS Metrics](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-available-cloudwatch-metrics.html)
+# [SQS Monitoring](https://www.bluematador.com/blog/how-to-monitor-amazon-sqs-with-cloudwatch)
