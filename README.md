@@ -56,9 +56,14 @@ Form input parameters for configuring a bundle for deployment.
 <!-- PARAMS:START -->
 ## Properties
 
+- **`monitoring`** *(object)*
+  - **`alarms`** *(string)*: Enable and customize SQS metric alarms. Default: `AUTOMATED`.
+    - **One of**
+      - Automated
+      - Disabled
 - **`queue`** *(object)*
   - **`max_message_size`** *(integer)*: The limit of how many bytes a message can contain before Amazon SQS rejects it. Minimum: `1024`. Maximum: `262144`. Default: `262144`.
-  - **`message_retention_seconds`** *(integer)*: The number of seconds Amazon SQS retains a message. The default for this attribute is 345600 (4 days). Minimum: `60`. Maximum: `1209600`. Default: `345600`.
+  - **`message_retention_seconds`** *(integer)*: How long Amazon SQS retains a message. Minimum: `60`. Maximum: `1209600`. Default: `345600`.
   - **`region`** *(string)*: Region should generally be set to the same as the publisher topic. Selecting a different region will enable multi-region mode.
 
     Examples:
@@ -66,12 +71,15 @@ Form input parameters for configuring a bundle for deployment.
     "us-west-2"
     ```
 
-  - **`visibility_timeout_seconds`** *(integer)*: The visibility timeout for the queue. The default for this attribute is 30. Minimum: `0`. Maximum: `43200`. Default: `30`.
+  - **`visibility_timeout_seconds`** *(integer)*: The period of time during which Amazon SQS prevents other consumers from receiving and processing the message. Minimum: `0`. Maximum: `43200`. Default: `30`.
 ## Examples
 
   ```json
   {
       "__name": "Default Queue",
+      "monitoring": {
+          "alarms": "AUTOMATED"
+      },
       "queue": {
           "max_message_size": 262144,
           "message_retention_seconds": 345600,
@@ -118,11 +126,6 @@ Connections from other bundles that this bundle depends on.
         "us-west-2"
         ```
 
-      - **`resource`** *(string)*
-      - **`service`** *(string)*
-      - **`zone`** *(string)*: AWS Availability Zone.
-
-        Examples:
 - **`topic`** *(object)*: Cannot contain additional properties.
   - **`data`** *(object)*
     - **`infrastructure`** *(object)*
@@ -175,11 +178,6 @@ Connections from other bundles that this bundle depends on.
         "us-west-2"
         ```
 
-      - **`resource`** *(string)*
-      - **`service`** *(string)*
-      - **`zone`** *(string)*: AWS Availability Zone.
-
-        Examples:
 <!-- CONNECTIONS:END -->
 
 </details>
@@ -246,11 +244,6 @@ Resources created by this bundle that can be connected to other bundles.
         "us-west-2"
         ```
 
-      - **`resource`** *(string)*
-      - **`service`** *(string)*
-      - **`zone`** *(string)*: AWS Availability Zone.
-
-        Examples:
 - **`queue`** *(object)*: Cannot contain additional properties.
   - **`data`** *(object)*
     - **`infrastructure`** *(object)*
@@ -303,11 +296,6 @@ Resources created by this bundle that can be connected to other bundles.
         "us-west-2"
         ```
 
-      - **`resource`** *(string)*
-      - **`service`** *(string)*
-      - **`zone`** *(string)*: AWS Availability Zone.
-
-        Examples:
 <!-- ARTIFACTS:END -->
 
 </details>

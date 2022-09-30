@@ -54,7 +54,7 @@ params:
         visibility_timeout_seconds:
           type: integer
           title: Visibility Timeout (seconds)
-          description: The visibility timeout for the queue. The default for this attribute is 30.
+          description: The period of time during which Amazon SQS prevents other consumers from receiving and processing the message.
           default: 30
           minimum: 0
           maximum: 43200
@@ -64,7 +64,7 @@ params:
           default: 345600
           minimum: 60
           maximum: 1209600
-          description: The number of seconds Amazon SQS retains a message. The default for this attribute is 345600 (4 days).
+          description: How long Amazon SQS retains a message.
         max_message_size:
           type: integer
           title: Max Message Size (KiB)
@@ -106,3 +106,12 @@ ui:
     region:
       ui:field: supportedCloudLocationsDropdown
       cloudService: aws
+    visibility_timeout_seconds:
+      ui:field: conversionFieldTime
+      unit: Seconds
+    message_retention_seconds:
+      ui:field: conversionFieldTime
+      unit: Seconds
+    max_message_size:
+      ui:field: conversionFieldData
+      unit: KiB
