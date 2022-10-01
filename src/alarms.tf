@@ -3,7 +3,6 @@ locals {
     # ApproximateNumberOfMessagesVisible SUM > 0
     dlq_num_messages_visible = {
       threshold = 0
-      statistic = "Sum"
       period    = 300
     }
 
@@ -11,7 +10,6 @@ locals {
     main_age_of_oldest_message = {
       # 80% of age
       threshold = floor(var.queue.message_retention_seconds * 0.8)
-      statistic = "Maximum"
       period    = 300
     }
 
@@ -19,7 +17,6 @@ locals {
     # ApproximateNumberOfMessagesNotVisible Service maximums are 120k / 20k (FIFO)
     main_num_messages_not_visible = {
       threshold = local.is_fifo ? 18000 : 110000
-      statistic = "Maximum"
       period    = 300
     }
 
@@ -27,13 +24,17 @@ locals {
     main_sent_message_size = {
       # 90% of size
       threshold = floor(var.queue.max_message_size * 0.9)
-      statistic = "Average"
       period    = 300
     }
   }
 
-  # TODO: Support CUSTOM
-  alarms = var.monitoring.alarms == "AUTOMATED" ? local.automated_alarms : {}
+  alarms_map = {
+    "AUTOMATED" = local.automated_alarms
+    "DISABLED"  = {}
+    "CUSTOM"    = lookup(var.monitoring, "alarms", {})
+  }
+
+  alarms = lookup(local.alarms_map, var.monitoring.mode, {})
 }
 
 module "alarm_channel" {
@@ -53,12 +54,9 @@ module "dlq_num_messages_visible_alarm" {
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = 1
   period              = local.alarms.dlq_num_messages_visible.period
-  statistic           = local.alarms.dlq_num_messages_visible.statistic
-
-
-  threshold = local.alarms.dlq_num_messages_visible.threshold
-  message   = "SQS Queue ${aws_sqs_queue.dlq.name}: ${local.alarms.dlq_num_messages_visible.statistic} ApproximateNumberOfMessagesVisible > ${local.alarms.dlq_num_messages_visible.threshold}"
-
+  statistic           = "Sum"
+  threshold           = local.alarms.dlq_num_messages_visible.threshold
+  message             = "SQS Queue ${aws_sqs_queue.dlq.name}: Sum ApproximateNumberOfMessagesVisible > ${local.alarms.dlq_num_messages_visible.threshold}"
   dimensions = {
     QueueName = aws_sqs_queue.dlq.name
   }
@@ -76,16 +74,14 @@ module "main_age_of_oldest_message_alarm" {
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = 1
   period              = local.alarms.main_age_of_oldest_message.period
-  statistic           = local.alarms.main_age_of_oldest_message.statistic
-
-  message   = "SQS Queue ${aws_sqs_queue.main.name}: ${local.alarms.main_age_of_oldest_message.statistic} ApproximateAgeOfOldestMessage > ${local.alarms.main_age_of_oldest_message.threshold}"
-  threshold = local.alarms.main_age_of_oldest_message.threshold
+  statistic           = "Maximum"
+  message             = "SQS Queue ${aws_sqs_queue.main.name}: Maximum ApproximateAgeOfOldestMessage > ${local.alarms.main_age_of_oldest_message.threshold}"
+  threshold           = local.alarms.main_age_of_oldest_message.threshold
 
   dimensions = {
     QueueName = aws_sqs_queue.main.name
   }
 }
-
 
 module "main_num_messages_not_visible_threshold_alarm" {
   count               = lookup(local.alarms, "main_num_messages_not_visible", null) == null ? 0 : 1
@@ -99,10 +95,9 @@ module "main_num_messages_not_visible_threshold_alarm" {
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = 1
   period              = local.alarms.main_num_messages_not_visible.period
-  statistic           = local.alarms.main_num_messages_not_visible.statistic
-
-  message   = "SQS Queue ${aws_sqs_queue.main.name}: ${local.alarms.main_num_messages_not_visible.statistic} ApproximateNumberOfMessagesNotVisible > ${local.alarms.main_num_messages_not_visible.threshold}"
-  threshold = local.alarms.main_num_messages_not_visible.threshold
+  statistic           = "Maximum"
+  message             = "SQS Queue ${aws_sqs_queue.main.name}: Maximum ApproximateNumberOfMessagesNotVisible > ${local.alarms.main_num_messages_not_visible.threshold}"
+  threshold           = local.alarms.main_num_messages_not_visible.threshold
 
   dimensions = {
     QueueName = aws_sqs_queue.main.name
@@ -122,10 +117,9 @@ module "main_sent_message_size_alarm" {
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = 1
   period              = local.alarms.main_sent_message_size.period
-  statistic           = local.alarms.main_sent_message_size.statistic
-
-  message   = "SQS Queue ${aws_sqs_queue.main.name}: ${local.alarms.main_sent_message_size.statistic} SentMessageSize > ${local.alarms.main_sent_message_size.threshold}"
-  threshold = local.alarms.main_sent_message_size.threshold
+  statistic           = "Average"
+  message             = "SQS Queue ${aws_sqs_queue.main.name}: Average SentMessageSize > ${local.alarms.main_sent_message_size.threshold}"
+  threshold           = local.alarms.main_sent_message_size.threshold
 
   dimensions = {
     QueueName = aws_sqs_queue.main.name

@@ -9,11 +9,27 @@ steps:
   - path: src
     provisioner: terraform
 
+CloudWatchAlarmMetric: &cloudwatch_alarm_metric
+  required:
+    - threshold
+    - period
+  properties:
+    threshold:
+      type: integer
+      title: Threshold
+    period:
+      type: integer
+      title: Period
+      minimum: 1
+      maximum: 86400
+      default: 300
+      description: The length of time associated with this statistic
+
 params:
   examples:
     - __name: Default Queue
       monitoring:
-        alarms: AUTOMATED
+        mode: AUTOMATED
       queue:
         region: us-east-1
         visibility_timeout_seconds: 30
@@ -26,8 +42,8 @@ params:
       type: object
       title: Monitoring
       properties:
-        alarms:
-          title: Alarms
+        mode:
+          title: Alarm Mode
           description: Enable and customize SQS metric alarms.
           # TODO: back this to a type to keep it consistent across bundles
           type: string
@@ -35,13 +51,50 @@ params:
           oneOf:
             - const: AUTOMATED
               title: Automated
-            # - const: CUSTOM
-            #   title: Custom
+            - const: CUSTOM
+              title: Custom
             - const: DISABLED
               title: Disabled
+      dependencies:
+        mode:
+          oneOf:
+            - properties:
+                mode:
+                  const: AUTOMATED
+            - properties:
+                mode:
+                  const: DISABLED
+            - properties:
+                mode:
+                  const: CUSTOM
+                alarms:
+                  type: object
+                  title: Alarms
+                  properties:
+                    dlq_num_messages_visible:
+                      title: Dead-letter Queue Messages Visible
+                      description: "Unit: Count"
+                      type: object
+                      <<: *cloudwatch_alarm_metric
+                    main_age_of_oldest_message:
+                      title: Age of Oldest Message in Queue
+                      description: "Unit: Seconds"
+                      type: object
+                      <<: *cloudwatch_alarm_metric
+                    main_num_messages_not_visible:
+                      title: Messages Not Visible
+                      description: "Messages that are actively being processed, but have not been deleted or failed. SQS supports up to 120k messages in a standard queue and 20k in a FIFO queue. Unit: Count"
+                      type: object
+                      <<: *cloudwatch_alarm_metric
+                    main_sent_message_size:
+                      title: Sent Message Size
+                      description: "Units: Bytes"
+                      type: object
+                      <<: *cloudwatch_alarm_metric
 
     queue:
       type: object
+      title: Queue
       required:
         - region
         - visibility_timeout_seconds
@@ -115,3 +168,7 @@ ui:
     max_message_size:
       ui:field: conversionFieldData
       unit: KiB
+  monitoring:
+    ui:order:
+      - mode
+      - alarms

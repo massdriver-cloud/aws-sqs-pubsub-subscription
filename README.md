@@ -57,9 +57,10 @@ Form input parameters for configuring a bundle for deployment.
 ## Properties
 
 - **`monitoring`** *(object)*
-  - **`alarms`** *(string)*: Enable and customize SQS metric alarms. Default: `AUTOMATED`.
+  - **`mode`** *(string)*: Enable and customize SQS metric alarms. Default: `AUTOMATED`.
     - **One of**
       - Automated
+      - Custom
       - Disabled
 - **`queue`** *(object)*
   - **`max_message_size`** *(integer)*: The limit of how many bytes a message can contain before Amazon SQS rejects it. Minimum: `1024`. Maximum: `262144`. Default: `262144`.
@@ -78,7 +79,7 @@ Form input parameters for configuring a bundle for deployment.
   {
       "__name": "Default Queue",
       "monitoring": {
-          "alarms": "AUTOMATED"
+          "mode": "AUTOMATED"
       },
       "queue": {
           "max_message_size": 262144,
