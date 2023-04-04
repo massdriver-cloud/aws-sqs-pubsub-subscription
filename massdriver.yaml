@@ -2,8 +2,8 @@ schema: draft-07
 name: "aws-sqs-pubsub-subscription"
 description: "AWS SQS Pub/Sub Subscription is an encrypted SQS Queue designed for Pub/Sub fan-out messaging with AWS SNS."
 source_url: github.com/massdriver-cloud/aws-sqs-pubsub-subscription
-access: "public"
-type: "bundle"
+access: "private"
+type: "infrastructure"
 
 steps:
   - path: src
@@ -125,6 +125,15 @@ params:
           minimum: 1024
           maximum: 262144
           description: The limit of how many bytes a message can contain before Amazon SQS rejects it.
+        additional_access:
+          type: array
+          title: Additional Account Access 
+          description: "Allow additional accounts to read from this queue"
+          default: []
+          items:
+            type: string
+            pattern: ^\d{12}$
+            message: "Entry must be a valid AWS Organization ID"
 
 connections:
   required:
@@ -156,6 +165,7 @@ ui:
       - visibility_timeout_seconds
       - message_retention_seconds
       - max_message_size
+      - additional_access
     region:
       ui:field: supportedCloudLocationsDropdown
       cloudService: aws
