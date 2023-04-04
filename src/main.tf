@@ -48,11 +48,6 @@ resource "aws_sns_topic_subscription" "main" {
   endpoint             = aws_sqs_queue.main.arn
 }
 
-/*
-  Moving the queue policy from the primary resource. This will cause a breif moment where sns may not be able to write to SQS
-  while the queue updates and the new policy is create. Taking this now is important because few people are using this bundle today
-  and this gives us more flexibility to update the queue policy for advanced access in the future without incurring this outage later.
-*/
 data "aws_iam_policy_document" "queue_policy" {
   statement {
     sid    = "Allow SNS to SendMessage to this queue"
