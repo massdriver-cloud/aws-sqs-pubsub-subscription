@@ -3,7 +3,6 @@ name: aws-sqs-pubsub-subscription
 version: 1.0.0
 description: AWS SQS Pub/Sub Subscription is an encrypted SQS Queue designed for Pub/Sub fan-out messaging with AWS SNS.
 source_url: https://github.com/massdriver-cloud/aws-sqs-pubsub-subscription
-type: application
 steps:
 - path: src
   provisioner: opentofu
