@@ -1,7 +1,6 @@
 resource "massdriver_artifact" "queue" {
-  field                = "queue"
-  provider_resource_id = aws_sqs_queue.main.arn
-  name                 = "AWS SQS Pub/Sub queue: ${local.name}"
+  field    = "queue"
+  name     = "AWS SQS Pub/Sub queue: ${local.name}"
   artifact = jsonencode(
     {
       data = {
