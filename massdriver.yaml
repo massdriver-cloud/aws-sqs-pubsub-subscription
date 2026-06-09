@@ -138,18 +138,18 @@ connections:
   - topic
   properties:
     aws_authentication:
-      "$ref": massdriver/aws-iam-role
+      "$ref": aws-iam-role
     topic:
-      "$ref": massdriver/aws-sns-topic
+      "$ref": aws-sns-topic
 artifacts:
   required:
   - queue
   - dlq
   properties:
     queue:
-      "$ref": massdriver/aws-sqs-queue
+      "$ref": aws-sqs-queue
     dlq:
-      "$ref": massdriver/aws-sqs-queue
+      "$ref": aws-sqs-queue
 ui:
   ui:order:
   - queue
