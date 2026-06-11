@@ -1,7 +1,7 @@
 
 locals {
   fifo_ext                = ".fifo"
-  is_fifo                 = try(regex(".fifo$", var.topic.data.infrastructure.arn) == local.fifo_ext, false)
+  is_fifo                 = try(regex(".fifo$", var.topic.infrastructure.arn) == local.fifo_ext, false)
   is_multi_region         = (var.queue.region != var.topic.specs.aws.region)
   name                    = var.md_metadata.name_prefix
   dlq_name                = "${var.md_metadata.name_prefix}-dlq"
@@ -44,7 +44,7 @@ resource "aws_sns_topic_subscription" "main" {
   provider             = aws.topic
   protocol             = "sqs"
   raw_message_delivery = true
-  topic_arn            = var.topic.data.infrastructure.arn
+  topic_arn            = var.topic.infrastructure.arn
   endpoint             = aws_sqs_queue.main.arn
 }
 
@@ -61,7 +61,7 @@ data "aws_iam_policy_document" "queue_policy" {
     condition {
       test     = "ArnEquals"
       variable = "aws:SourceArn"
-      values   = ["${var.topic.data.infrastructure.arn}"]
+      values   = ["${var.topic.infrastructure.arn}"]
     }
   }
 

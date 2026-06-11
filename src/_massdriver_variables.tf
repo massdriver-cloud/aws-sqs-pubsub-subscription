@@ -4,7 +4,7 @@
 variable "aws_authentication" {
   type = object({
     arn         = string
-    external_id = string
+    external_id = optional(string)
   })
 }
 variable "md_metadata" {
@@ -63,24 +63,22 @@ variable "queue" {
 }
 variable "topic" {
   type = object({
-    data = object({
-      infrastructure = object({
-        arn = string
-      })
-      security = optional(object({
-        iam = optional(map(object({
-          policy_arn = string
-        })))
-        identity = optional(object({
-          role_arn = optional(string)
-        }))
-        network = optional(map(object({
-          arn      = string
-          port     = number
-          protocol = string
-        })))
-      }))
+    infrastructure = object({
+      arn = string
     })
+    security = optional(object({
+      iam = optional(map(object({
+        policy_arn = string
+      })))
+      identity = optional(object({
+        role_arn = optional(string)
+      }))
+      network = optional(map(object({
+        arn      = string
+        port     = number
+        protocol = string
+      })))
+    }))
     specs = object({
       aws = optional(object({
         region = optional(string)
